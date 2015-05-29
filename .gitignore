@@ -1,0 +1,6 @@
+#Folders
+/node_modules
+/release
+
+#Files
+/spec/**/*.js

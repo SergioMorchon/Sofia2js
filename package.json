@@ -1,0 +1,39 @@
+{
+  "name": "sofia2",
+  "version": "0.1.0",
+  "description": "Sofia2 is an IoT plattform accesible from any kind of thing by using middlewares and standards.",
+  "main": "release/sofia2.bundle.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SergioMorchon/Sofia2js.git"
+  },
+  "scripts": {
+    "ts:src": "tsc -p src",
+    "ts:spec": "tsc -p spec",
+    "bundle": "browserify -s Sofia2 release/sofia2.js > release/sofia2.bundle.js",
+    "build": "npm run ts:src && npm run bundle",
+    "test": "npm run ts:spec && jasmine",
+    "postinstall": "npm run build"
+  },
+  "keywords": [
+    "sofia",
+    "sofia2",
+    "iot",
+    "internet",
+    "things",
+    "bigdata",
+    "big",
+    "data"
+  ],
+  "author": "Sergio Morchón Poveda",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SergioMorchon/Sofia2js/issues"
+  },
+  "homepage": "https://github.com/SergioMorchon/Sofia2js",
+  "devDependencies": {
+    "browserify": "^10.2.3",
+    "jasmine": "^2.3.1",
+    "typescript": "^1.5.0-beta"
+  }
+}
