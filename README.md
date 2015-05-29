@@ -1,5 +1,8 @@
 # Sofia2 - ECMAScript
 
+[![npm version](https://badge.fury.io/js/sofia2.svg)](http://badge.fury.io/js/sofia2)
+[![Build Status](https://travis-ci.org/SergioMorchon/Sofia2js.svg)](https://travis-ci.org/SergioMorchon/Sofia2js)
+
 ** UNDER CONSTRUCTION, COMING SOON... **
 
 The client for [ECMAScript](http://www.ecmascript.org/) (from now simply "ES", the standard specification of the well known *JavaScript* language) is built over ECMAScript 6 draft standards, but using only the subset that is able to be pollyfied with and for ES3.
