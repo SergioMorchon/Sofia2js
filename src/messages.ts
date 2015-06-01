@@ -12,16 +12,22 @@ export module MessageType {
 
 export module DirectionType {
 	export const REQUEST = "REQUEST";
+	export const ERROR = "ERROR";
 }
 
 //#region Bodies
-export interface JoinLogInBody {
-	instance: string;
+export interface JoinInstanceBody {
+	
+}
+export interface JoinLogInBody extends JoinInstanceBody {
 	user: string;
 	password: string;
 }
-export interface JoinTokenBody {
+export interface JoinTokenBody extends JoinInstanceBody {
 	token: string;
+}
+interface JoinBody {
+	
 }
 export interface LeaveBody {
 }
