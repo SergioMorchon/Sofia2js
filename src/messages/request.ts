@@ -1,3 +1,7 @@
+/// <reference path="message" />
+
+import * as Message from "./message";
+
 //#region Bodies
 export interface JoinInstanceBody {
 	
@@ -20,22 +24,14 @@ export interface InsertBody<Ontology> {
 }
 //#endregion
 
-export interface Message<TBody> {
-	body: TBody;
-	direction: string;
-	ontology?: string;
-	messageType: string;
-	sessionKey: string;
-}
-
 //#region Messages
-export interface JoinMessage extends Message<JoinLogInBody | JoinTokenBody> {
+export interface JoinMessage extends Message.Envelopment<JoinLogInBody | JoinTokenBody> {
 }
 
-export interface LeaveMessage extends Message<LeaveBody> {
+export interface LeaveMessage extends Message.Envelopment<LeaveBody> {
 }
 
-export interface InsertMessage<Ontology> extends Message<InsertBody<Ontology>> {
+export interface InsertMessage<Ontology> extends Message.Envelopment<InsertBody<Ontology>> {
 }
 //#endregion
 

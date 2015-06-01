@@ -4,7 +4,8 @@
 /// <reference path="messages/request" />
 /// <reference path="endpoint" />
 
-import Message from "./messages/message";
+import Message = require("./messages/message");
+import Direction = require("./messages/direction");
 import Endpoint from "./endpoint";
 import Requests = require("./messages/request");
 
@@ -29,7 +30,7 @@ class KP {
 		this.url = options.endpoint.url;
 	}
 
-	private onMessage(msg: Requests.Message<any>) {
+	private onMessage(msg: Message.Envelopment<any>) {
 		if (msg.direction === Message.Direction.ERROR) {
 			this.onError(msg);
 		} else {
@@ -41,7 +42,7 @@ class KP {
 		}
 	}
 
-	private processResponse(msg: Requests.Message<any>) {
+	private processResponse(msg: Message.Envelopment<any>) {
 		this.resolvers.splice(0, 1)[0](msg);
 	}
 
@@ -56,13 +57,13 @@ class KP {
 			onError: evt => {
 				this.onError(evt);
 			},
-			onMessage: (msg: Requests.Message<any>) => {
+			onMessage: (msg: Message.Envelopment<any>) => {
 				this.onMessage(msg);
 			}
 		});
 
 		return new Promise<void>((resolve, reject) => {
-			this.queueResolver((data: Requests.Message<any>) => {
+			this.queueResolver((data: Message.Envelopment<any>) => {
 				this.sessionKey = data.sessionKey;
 				resolve();
 			});

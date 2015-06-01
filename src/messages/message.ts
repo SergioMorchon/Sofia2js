@@ -4,7 +4,12 @@
 import Type from "./type";
 import Direction from "./direction";
 
-export default {
-	Type: Type,
-	Direction: Direction
+interface Envelopment<TBody> {
+	body: TBody;
+	direction: string;
+	ontology?: string;
+	messageType: string;
+	sessionKey: string;
 }
+
+export { Type, Direction, Envelopment }
