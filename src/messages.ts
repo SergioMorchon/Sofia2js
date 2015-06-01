@@ -10,6 +10,10 @@ export module MessageType {
 	export const Indication = "INDICATION";
 }
 
+export module DirectionType {
+	export const REQUEST = "REQUEST";
+}
+
 //#region Bodies
 export interface JoinBody {
 	instance: string;
