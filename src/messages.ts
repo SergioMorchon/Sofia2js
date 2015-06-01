@@ -19,8 +19,8 @@ export interface JoinBody {
 export interface LeaveBody {
 }
 
-export interface InsertBody<TData> {
-	data: TData;
+export interface InsertBody<Ontology> {
+	data: Ontology;
 }
 //#endregion
 
@@ -39,7 +39,7 @@ export interface JoinMessage extends Message<JoinBody> {
 export interface LeaveMessage extends Message<LeaveBody> {
 }
 
-export interface InsertMessage<TData> extends Message<InsertBody<TData>> {
+export interface InsertMessage<Ontology> extends Message<InsertBody<Ontology>> {
 }
 //#endregion
 
