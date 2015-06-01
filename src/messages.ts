@@ -1,3 +1,15 @@
+export module MessageType {
+	export const JOIN = "JOIN";
+	export const LEAVE = "LEAVE";
+	export const QUERY = "QUERY";
+	export const INSERT = "INSERT";
+	export const UPDATE = "UPDATE";
+	export const Delete = "DELETE";
+	export const Subscribe = "SUBSCRIBE";
+	export const Unsubscribe = "UNSUBSCRIBE";
+	export const Indication = "INDICATION";
+}
+
 //#region Bodies
 export interface JoinBody {
 	instance: string;
@@ -30,3 +42,14 @@ export interface LeaveMessage extends Message<LeaveBody> {
 export interface InsertMessage<TData> extends Message<InsertBody<TData>> {
 }
 //#endregion
+
+export enum QueryType {
+	Join,
+	Leave,
+	Query,
+	Insert,
+	Update,
+	Delete,
+	Subscribe,
+	Unsubscribe
+}
