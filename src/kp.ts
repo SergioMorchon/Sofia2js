@@ -13,12 +13,12 @@ import Response = require("./messages/response");
 class KP {
 	name: string;
 	endpoint: Endpoint;
-	
+
 	private sessionKey: string;
 	private url: string;
 	private resolvers = <Function[]>[];
 	private errorCallback: (error) => void;
-	
+
 	private onError(error: any) {
 		if (this.errorCallback) {
 			this.errorCallback(error);
@@ -52,7 +52,6 @@ class KP {
 	}
 
 	join(logIn: Request.JoinTokenBody) {
-		
 		this.endpoint = new Endpoint({
 			url: this.url,
 			onError: evt => {
@@ -78,7 +77,6 @@ class KP {
 	}
 
 	leave() {
-
 		return new Promise<void>((resolve, reject) => {
 
 			let msg: Request.LeaveMessage = {
@@ -88,17 +86,17 @@ class KP {
 				messageType: Message.Type.LEAVE
 			};
 
-			this.queueResolver(resolve);
+			this.queueResolver(() => {
+				this.endpoint.close();
+				this.endpoint = null;
+				resolve();
+			});
 			this.endpoint.send(msg);
 		});
 	}
 
 	insert<Ontology>() {
 		return this;
-	}
-
-	dispose() {
-		this.endpoint.close();
 	}
 }
 
