@@ -1,7 +1,7 @@
+/// <reference path="kp" />
 
+import KP from "./kp";
 
-module Sofia2 {
-	
+export default {
+	KP: KP
 }
-
-export default Sofia2;
