@@ -7,7 +7,8 @@
 import * as Message from "./messages/message";
 import Direction = require("./messages/direction");
 import Endpoint from "./endpoint";
-import Requests = require("./messages/request");
+import Request = require("./messages/request");
+import Response = require("./messages/response");
 
 class KP {
 	name: string;
@@ -30,7 +31,7 @@ class KP {
 		this.url = options.endpoint.url;
 	}
 
-	private onMessage(msg: Message.Envelopment<any>) {
+	private onMessage(msg: Message.Envelopment<Response.ResponseBody<any>>) {
 		if (msg.direction === Message.Direction.ERROR) {
 			this.onError(msg);
 		} else {
@@ -42,7 +43,7 @@ class KP {
 		}
 	}
 
-	private processResponse(msg: Message.Envelopment<any>) {
+	private processResponse(msg: Message.Envelopment<Response.ResponseBody<any>>) {
 		this.resolvers.splice(0, 1)[0](msg);
 	}
 
@@ -50,7 +51,7 @@ class KP {
 		this.resolvers.push(resolver);
 	}
 
-	join(logIn: Requests.JoinTokenBody) {
+	join(logIn: Request.JoinTokenBody) {
 		
 		this.endpoint = new Endpoint({
 			url: this.url,
@@ -63,11 +64,11 @@ class KP {
 		});
 
 		return new Promise<void>((resolve, reject) => {
-			this.queueResolver((data: Message.Envelopment<any>) => {
+			this.queueResolver((data: Response.JoinMessage) => {
 				this.sessionKey = data.sessionKey;
 				resolve();
 			});
-			this.endpoint.send<Requests.JoinMessage>({
+			this.endpoint.send<Request.JoinMessage>({
 				direction: Message.Direction.REQUEST,
 				body: logIn,
 				messageType: Message.Type.JOIN,
@@ -80,7 +81,7 @@ class KP {
 
 		return new Promise<void>((resolve, reject) => {
 
-			let msg: Requests.LeaveMessage = {
+			let msg: Request.LeaveMessage = {
 				direction: Message.Direction.REQUEST,
 				sessionKey: this.sessionKey,
 				body: null,
