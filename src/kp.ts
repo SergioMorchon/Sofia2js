@@ -78,20 +78,17 @@ class KP {
 
 	leave() {
 		return new Promise<void>((resolve, reject) => {
-
-			let msg: Request.LeaveMessage = {
-				direction: Message.Direction.REQUEST,
-				sessionKey: this.sessionKey,
-				body: null,
-				messageType: Message.Type.LEAVE
-			};
-
 			this.queueResolver(() => {
 				this.endpoint.close();
 				this.endpoint = null;
 				resolve();
 			});
-			this.endpoint.send(msg);
+			this.endpoint.send<Request.LeaveMessage>({
+				direction: Message.Direction.REQUEST,
+				sessionKey: this.sessionKey,
+				body: null,
+				messageType: Message.Type.LEAVE
+			});
 		});
 	}
 
