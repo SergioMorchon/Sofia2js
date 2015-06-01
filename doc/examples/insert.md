@@ -15,11 +15,13 @@ var kp = new Sofia2.default.KP({
 
 kp.join("mytoken"/* the kp token */).then(function () {
 	kp.insert({
-		Prop1: "Valueº",
+		Prop1: "Value",
 		Prop2: 829.9,
 		Prop3: {
 			SomeProp: false
 		}
-	});// insert the new ontology instance value, as it is.
+	})// insert the new ontology instance value, as it is.
+	// do any Insert as you want, ie. a loop or event-fired.
+	.leave();// and leave
 });
 ```
