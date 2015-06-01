@@ -1,9 +1,12 @@
 /// <reference path="lib.es6.d.ts" />
-/// <reference path="messages" />
+/// <reference path="messages/type" />
+/// <reference path="messages/message" />
+/// <reference path="messages/request" />
 /// <reference path="endpoint" />
 
+import Message from "./messages/message";
 import Endpoint from "./endpoint";
-import Messages = require("./messages");
+import Requests = require("./messages/request");
 
 class KP {
 	name: string;
@@ -26,11 +29,11 @@ class KP {
 		this.url = options.endpoint.url;
 	}
 
-	private onMessage(msg: Messages.Message<any>) {
-		if (msg.direction === Messages.DirectionType.ERROR) {
+	private onMessage(msg: Requests.Message<any>) {
+		if (msg.direction === Message.Direction.ERROR) {
 			this.onError(msg);
 		} else {
-			if (msg.messageType === Messages.MessageType.INDICATION) {
+			if (msg.messageType === Message.Type.INDICATION) {
 
 			} else {
 				this.processResponse(msg);
@@ -38,7 +41,7 @@ class KP {
 		}
 	}
 
-	private processResponse(msg: Messages.Message<any>) {
+	private processResponse(msg: Requests.Message<any>) {
 		this.resolvers.splice(0, 1)[0](msg);
 	}
 
@@ -46,27 +49,27 @@ class KP {
 		this.resolvers.push(resolver);
 	}
 
-	join(logIn: Messages.JoinTokenBody) {
+	join(logIn: Requests.JoinTokenBody) {
 		
 		this.endpoint = new Endpoint({
 			url: this.url,
 			onError: evt => {
 				this.onError(evt);
 			},
-			onMessage: (msg: Messages.Message<any>) => {
+			onMessage: (msg: Requests.Message<any>) => {
 				this.onMessage(msg);
 			}
 		});
 
 		return new Promise<void>((resolve, reject) => {
-			this.queueResolver((data: Messages.Message<any>) => {
+			this.queueResolver((data: Requests.Message<any>) => {
 				this.sessionKey = data.sessionKey;
 				resolve();
 			});
-			this.endpoint.send<Messages.JoinMessage>({
-				direction: Messages.DirectionType.REQUEST,
+			this.endpoint.send<Requests.JoinMessage>({
+				direction: Message.Direction.REQUEST,
 				body: logIn,
-				messageType: Messages.MessageType.JOIN,
+				messageType: Message.Type.JOIN,
 				sessionKey: null
 			});
 		});
@@ -76,11 +79,11 @@ class KP {
 
 		return new Promise<void>((resolve, reject) => {
 
-			let msg: Messages.LeaveMessage = {
-				direction: Messages.DirectionType.REQUEST,
+			let msg: Requests.LeaveMessage = {
+				direction: Message.Direction.REQUEST,
 				sessionKey: this.sessionKey,
 				body: null,
-				messageType: Messages.MessageType.LEAVE
+				messageType: Message.Type.LEAVE
 			};
 
 			this.queueResolver(resolve);
