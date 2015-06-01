@@ -1,15 +1,9 @@
-/// <reference path="type" />
-/// <reference path="direction" />
+/// <reference path="request" />
 
-import Type from "./type";
-import Direction from "./direction";
+import * as Request from "./request";
+import * as Response from "./response";
+import * as Type from "./type";
+import * as Direction from "./direction";
+import Envelopment from "./envelopment";
 
-interface Envelopment<TBody> {
-	body: TBody;
-	direction: string;
-	ontology?: string;
-	messageType: string;
-	sessionKey: string;
-}
-
-export { Type, Direction, Envelopment }
+export { Type, Direction, Envelopment, Request, Response }

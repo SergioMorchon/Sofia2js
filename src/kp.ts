@@ -4,7 +4,7 @@
 /// <reference path="messages/request" />
 /// <reference path="endpoint" />
 
-import Message = require("./messages/message");
+import * as Message from "./messages/message";
 import Direction = require("./messages/direction");
 import Endpoint from "./endpoint";
 import Requests = require("./messages/request");
