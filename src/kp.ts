@@ -28,7 +28,7 @@ class KP {
 	}
 
 	constructor(options: KP.Options) {
-		this.name = name;
+		this.name = options.name;
 		this.errorCallback = options.onError;
 		this.url = options.endpoint.url;
 		this.ontology = options.ontology;
@@ -74,7 +74,7 @@ class KP {
 			this.endpoint.send<Request.JoinMessage>({
 				direction: Message.Direction.REQUEST,
 				body: {
-					instance: `${this.instance}`,
+					instance: `${this.name}:${this.instance}`,
 					token: token
 				},
 				messageType: Message.Type.JOIN,
