@@ -1,13 +1,13 @@
-class Endpoint<Input, Output> {
+class Endpoint {
 	
 	socket: WebSocket;
 	
-	private onMessage: (message: Input) => void;
+	private onMessage: <Input>(message: Input) => void;
 	private onError: (evt: Event) => void;
 	
-	private queuedMessages = <Output[]>[];
+	private queuedMessages = <any[]>[];
 
-	constructor(options: Endpoint.Options<Input, Output>) {
+	constructor(options: Endpoint.Options) {
 
 		this.onMessage = options.onMessage;
 		this.onError = options.onError;
@@ -25,7 +25,7 @@ class Endpoint<Input, Output> {
 		};
 	}
 	
-	send(message: Output) {
+	send<Output>(message: Output) {
 		if (this.socket.readyState !== WebSocket.OPEN) {
 			this.queuedMessages.push(message);
 		} else {
@@ -39,9 +39,9 @@ class Endpoint<Input, Output> {
 }
 
 module Endpoint {
-	export interface Options<Input, Output> {
+	export interface Options {
 		url: string;
-		onMessage: (message: Input) => void;
+		onMessage: <Input>(message: Input) => void;
 		onError: (evt: Event) => void;
 	}
 }

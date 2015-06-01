@@ -7,13 +7,13 @@ import Messages = require("./messages");
 
 class KP {
 	name: string;
-	endpoint: Endpoint<Messages.Message<any>, Messages.Message<any>>;
+	endpoint: Endpoint;
+	
 	private sessionKey: string;
-
+	private url: string;
 	private resolvers = <Function[]>[];
-
 	private errorCallback: (error) => void;
-
+	
 	private onError(error: any) {
 		if (this.errorCallback) {
 			this.errorCallback(error);
@@ -23,15 +23,7 @@ class KP {
 	constructor(options: KP.Options) {
 		this.name = name;
 		this.errorCallback = options.onError;
-		this.endpoint = new Endpoint<Messages.Message<any>, Messages.Message<any>>({
-			url: options.endpoint.url,
-			onError: evt => {
-				this.onError(evt);
-			},
-			onMessage: msg => {
-				this.onMessage(msg);
-			}
-		});
+		this.url = options.endpoint.url;
 	}
 
 	private onMessage(msg: Messages.Message<any>) {
@@ -55,26 +47,45 @@ class KP {
 	}
 
 	join(logIn: Messages.JoinTokenBody) {
+		
+		this.endpoint = new Endpoint({
+			url: this.url,
+			onError: evt => {
+				this.onError(evt);
+			},
+			onMessage: (msg: Messages.Message<any>) => {
+				this.onMessage(msg);
+			}
+		});
 
 		return new Promise<void>((resolve, reject) => {
-
-			let msg: Messages.JoinMessage = {
-				direction: Messages.DirectionType.REQUEST,
-				body: logIn,
-				messageType: Messages.MessageType.JOIN,
-				sessionKey: null
-			};
-
 			this.queueResolver((data: Messages.Message<any>) => {
 				this.sessionKey = data.sessionKey;
 				resolve();
 			});
-			this.endpoint.send(msg);
+			this.endpoint.send<Messages.JoinMessage>({
+				direction: Messages.DirectionType.REQUEST,
+				body: logIn,
+				messageType: Messages.MessageType.JOIN,
+				sessionKey: null
+			});
 		});
 	}
 
 	leave() {
 
+		return new Promise<void>((resolve, reject) => {
+
+			let msg: Messages.LeaveMessage = {
+				direction: Messages.DirectionType.REQUEST,
+				sessionKey: this.sessionKey,
+				body: null,
+				messageType: Messages.MessageType.LEAVE
+			};
+
+			this.queueResolver(resolve);
+			this.endpoint.send(msg);
+		});
 	}
 
 	insert<Ontology>() {
