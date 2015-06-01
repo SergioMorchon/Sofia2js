@@ -15,10 +15,13 @@ export module DirectionType {
 }
 
 //#region Bodies
-export interface JoinBody {
+export interface JoinLogInBody {
 	instance: string;
 	user: string;
 	password: string;
+}
+export interface JoinTokenBody {
+	token: string;
 }
 export interface LeaveBody {
 }
@@ -37,7 +40,7 @@ export interface Message<TBody> {
 }
 
 //#region Messages
-export interface JoinMessage extends Message<JoinBody> {
+export interface JoinMessage extends Message<JoinLogInBody | JoinTokenBody> {
 }
 
 export interface LeaveMessage extends Message<LeaveBody> {
