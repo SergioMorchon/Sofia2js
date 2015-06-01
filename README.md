@@ -24,6 +24,18 @@ Because sofia2 follows the [UMD](https://github.com/umdjs/umd), it is able to ru
 With npm do:
 `npm install sofia2 --save-dev`
 
+### Browsers
+
+Include the `release/sofia2.bundle.js` in your document with a `<script>` tag or with a `require` sentence.
+
+#### Polyfills
+
+EcmaScript 5:
+- Shim: you can download it from [es5-shim npm package](https://www.npmjs.com/package/es5-shim) **before** ECMAScript 6 pollyfills and sofia2js.
+
+EcmaScript 6:
+- [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise): You can download it from [es6-promise npm package](https://www.npmjs.com/package/es6-promise) **before** sofia2js.
+
 ## Build it
 
 In order to build the ECMAScript client of Sofia2, you will need to following the next steps:
@@ -36,3 +48,6 @@ A new folder `release` will appear, containing ol the generated files...
 
 *Thats all!*
 
+## Examples
+
+- [Browser](doc/examples/insert.md)
