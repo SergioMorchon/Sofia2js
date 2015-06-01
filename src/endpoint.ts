@@ -4,6 +4,8 @@ class Endpoint<Input, Output> {
 	
 	private onMessage: (message: Input) => void;
 	private onError: (evt: Event) => void;
+	
+	private queuedMessages = <Output[]>[];
 
 	constructor(options: Endpoint.Options<Input, Output>) {
 
@@ -16,10 +18,19 @@ class Endpoint<Input, Output> {
 		this.socket.onmessage = evt => {
 			this.onMessage(JSON.parse(evt.data));
 		};
+		this.socket.onopen = () => {
+			for (let message of this.queuedMessages) {
+				this.send(message);
+			}
+		};
 	}
 	
 	send(message: Output) {
-		this.socket.send(JSON.stringify(message));
+		if (this.socket.readyState !== WebSocket.OPEN) {
+			this.queuedMessages.push(message);
+		} else {
+			this.socket.send(JSON.stringify(message));
+		}
 	}
 
 	close() {
