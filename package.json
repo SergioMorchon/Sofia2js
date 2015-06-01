@@ -1,6 +1,6 @@
 {
   "name": "sofia2",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Sofia2 is an IoT plattform accesible from any kind of thing by using middlewares and standards.",
   "main": "release/sofia2.bundle.js",
   "repository": {
