@@ -20,8 +20,10 @@ kp.join("mytoken"/* the kp token */).then(function () {
 		Prop3: {
 			SomeProp: false
 		}
-	})// insert the new ontology instance value, as it is.
+	});// insert the new ontology instance value, as it is.
+	
 	// do any Insert as you want, ie. a loop or event-fired.
-	.leave();// and leave
+	
+	kp.leave();// and leave
 });
 ```
