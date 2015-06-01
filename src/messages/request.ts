@@ -4,7 +4,7 @@ import Envelopment from "./envelopment";
 
 //#region Bodies
 export interface JoinInstanceBody {
-	
+	instance: string;
 }
 export interface JoinLogInBody extends JoinInstanceBody {
 	user: string;
@@ -20,7 +20,9 @@ export interface LeaveBody {
 }
 
 export interface InsertBody<Ontology> {
-	data: Ontology;
+	data: {
+		[ontologyName: string]: Ontology;
+	}
 }
 //#endregion
 

@@ -12,6 +12,8 @@ import Response = require("./messages/response");
 
 class KP {
 	name: string;
+	ontology: string;
+	instance: string;
 	endpoint: Endpoint;
 
 	private sessionKey: string;
@@ -29,6 +31,8 @@ class KP {
 		this.name = name;
 		this.errorCallback = options.onError;
 		this.url = options.endpoint.url;
+		this.ontology = options.ontology;
+		this.instance = options.instance;
 	}
 
 	private onMessage(msg: Message.Envelopment<Response.ResponseBody<any>>) {
@@ -51,7 +55,7 @@ class KP {
 		this.resolvers.push(resolver);
 	}
 
-	join(logIn: Request.JoinTokenBody) {
+	join(token: string) {
 		this.endpoint = new Endpoint({
 			url: this.url,
 			onError: evt => {
@@ -69,7 +73,10 @@ class KP {
 			});
 			this.endpoint.send<Request.JoinMessage>({
 				direction: Message.Direction.REQUEST,
-				body: logIn,
+				body: {
+					instance: `${this.instance}`,
+					token: token
+				},
 				messageType: Message.Type.JOIN,
 				sessionKey: null
 			});
@@ -92,15 +99,34 @@ class KP {
 		});
 	}
 
-	insert<Ontology>() {
-		return this;
+	insert<Ontology>(data: Ontology) {
+		return new Promise<void>((resolve, reject) => {
+			this.queueResolver((response: Response.InsertMessage) => {
+				this.endpoint.close();
+				this.endpoint = null;
+				resolve();
+			});
+			this.endpoint.send<Request.InsertMessage<Ontology>>({
+				direction: Message.Direction.REQUEST,
+				sessionKey: this.sessionKey,
+				body: {
+					data: {
+						[this.ontology]: data
+					}
+				},
+				ontology: this.ontology,
+				messageType: Message.Type.INSERT
+			});
+		});
 	}
 }
 
 module KP {
 	export interface Options {
 		name: string;
-		onError: (error) => void;
+		ontology: string;
+		instance: string;
+		onError?: (error) => void;
 		endpoint: {
 			url: string;
 		}
