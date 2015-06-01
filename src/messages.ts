@@ -4,10 +4,10 @@ export module MessageType {
 	export const QUERY = "QUERY";
 	export const INSERT = "INSERT";
 	export const UPDATE = "UPDATE";
-	export const Delete = "DELETE";
-	export const Subscribe = "SUBSCRIBE";
-	export const Unsubscribe = "UNSUBSCRIBE";
-	export const Indication = "INDICATION";
+	export const DELETE = "DELETE";
+	export const SUBSCRIBE = "SUBSCRIBE";
+	export const UNSUBSCRIBE = "UNSUBSCRIBE";
+	export const INDICATION = "INDICATION";
 }
 
 export module DirectionType {
@@ -31,7 +31,7 @@ export interface InsertBody<Ontology> {
 export interface Message<TBody> {
 	body: TBody;
 	direction: string;
-	ontology: string;
+	ontology?: string;
 	messageType: string;
 	sessionKey: string;
 }
