@@ -1,19 +1,24 @@
 /// <reference path="lib.es6.d.ts" />
-/// <reference path="messages" />
+/// <reference path="messages/type" />
+/// <reference path="messages/message" />
+/// <reference path="messages/request" />
 /// <reference path="endpoint" />
 
+import * as Message from "./messages/message";
+import Direction = require("./messages/direction");
 import Endpoint from "./endpoint";
-import Messages = require("./messages");
+import Request = require("./messages/request");
+import Response = require("./messages/response");
 
 class KP {
 	name: string;
-	endpoint: Endpoint<Messages.Message<any>, Messages.Message<any>>;
+	endpoint: Endpoint;
+	
 	private sessionKey: string;
-
+	private url: string;
 	private resolvers = <Function[]>[];
-
 	private errorCallback: (error) => void;
-
+	
 	private onError(error: any) {
 		if (this.errorCallback) {
 			this.errorCallback(error);
@@ -23,22 +28,14 @@ class KP {
 	constructor(options: KP.Options) {
 		this.name = name;
 		this.errorCallback = options.onError;
-		this.endpoint = new Endpoint<Messages.Message<any>, Messages.Message<any>>({
-			url: options.endpoint.url,
-			onError: evt => {
-				this.onError(evt);
-			},
-			onMessage: msg => {
-				this.onMessage(msg);
-			}
-		});
+		this.url = options.endpoint.url;
 	}
 
-	private onMessage(msg: Messages.Message<any>) {
-		if (msg.direction === Messages.DirectionType.ERROR) {
+	private onMessage(msg: Message.Envelopment<Response.ResponseBody<any>>) {
+		if (msg.direction === Message.Direction.ERROR) {
 			this.onError(msg);
 		} else {
-			if (msg.messageType === Messages.MessageType.INDICATION) {
+			if (msg.messageType === Message.Type.INDICATION) {
 
 			} else {
 				this.processResponse(msg);
@@ -46,7 +43,7 @@ class KP {
 		}
 	}
 
-	private processResponse(msg: Messages.Message<any>) {
+	private processResponse(msg: Message.Envelopment<Response.ResponseBody<any>>) {
 		this.resolvers.splice(0, 1)[0](msg);
 	}
 
@@ -54,27 +51,46 @@ class KP {
 		this.resolvers.push(resolver);
 	}
 
-	join(logIn: Messages.JoinTokenBody) {
+	join(logIn: Request.JoinTokenBody) {
+		
+		this.endpoint = new Endpoint({
+			url: this.url,
+			onError: evt => {
+				this.onError(evt);
+			},
+			onMessage: (msg: Message.Envelopment<any>) => {
+				this.onMessage(msg);
+			}
+		});
 
 		return new Promise<void>((resolve, reject) => {
-
-			let msg: Messages.JoinMessage = {
-				direction: Messages.DirectionType.REQUEST,
-				body: logIn,
-				messageType: Messages.MessageType.JOIN,
-				sessionKey: null
-			};
-
-			this.queueResolver((data: Messages.Message<any>) => {
+			this.queueResolver((data: Response.JoinMessage) => {
 				this.sessionKey = data.sessionKey;
 				resolve();
 			});
-			this.endpoint.send(msg);
+			this.endpoint.send<Request.JoinMessage>({
+				direction: Message.Direction.REQUEST,
+				body: logIn,
+				messageType: Message.Type.JOIN,
+				sessionKey: null
+			});
 		});
 	}
 
 	leave() {
 
+		return new Promise<void>((resolve, reject) => {
+
+			let msg: Request.LeaveMessage = {
+				direction: Message.Direction.REQUEST,
+				sessionKey: this.sessionKey,
+				body: null,
+				messageType: Message.Type.LEAVE
+			};
+
+			this.queueResolver(resolve);
+			this.endpoint.send(msg);
+		});
 	}
 
 	insert<Ontology>() {
