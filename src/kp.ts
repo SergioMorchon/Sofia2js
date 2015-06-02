@@ -2,22 +2,23 @@
 /// <reference path="messages/type" />
 /// <reference path="messages/message" />
 /// <reference path="messages/request" />
-/// <reference path="endpoint" />
+/// <reference path="endpoints/web-socket" />
 
 import * as Message from "./messages/message";
 import Direction = require("./messages/direction");
-import Endpoint from "./endpoint";
+import WSEndpoint from "./endpoints/web-socket";
 import Request = require("./messages/request");
 import Response = require("./messages/response");
+import EndpointUrls from "./endpoints/endpoint-urls";
 
 class KP {
 	name: string;
 	ontology: string;
 	instance: string;
-	endpoint: Endpoint;
+	endpoint: WSEndpoint;
 
 	private sessionKey: string;
-	private url: string;
+	private endpointUrls: EndpointUrls;
 	private resolvers = <Function[]>[];
 	private errorCallback: (error) => void;
 
@@ -30,7 +31,7 @@ class KP {
 	constructor(options: KP.Options) {
 		this.name = options.name;
 		this.errorCallback = options.onError;
-		this.url = options.endpoint.url;
+		this.endpointUrls = options.endpoints;
 		this.ontology = options.ontology;
 		this.instance = options.instance;
 	}
@@ -56,8 +57,8 @@ class KP {
 	}
 
 	join(token: string) {
-		this.endpoint = new Endpoint({
-			url: this.url,
+		this.endpoint = new WSEndpoint({
+			url: this.endpointUrls[WSEndpoint.ENDPOINT_TYPE],
 			onError: evt => {
 				this.onError(evt);
 			},
@@ -122,14 +123,13 @@ class KP {
 }
 
 module KP {
+	
 	export interface Options {
 		name: string;
 		ontology: string;
 		instance: string;
 		onError?: (error) => void;
-		endpoint: {
-			url: string;
-		}
+		endpoints: EndpointUrls;
 	}
 }
 
