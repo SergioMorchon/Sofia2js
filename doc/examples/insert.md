@@ -6,7 +6,7 @@ var kp = new Sofia2.default.KP({
 	ontology: "OntologyName",// ie: temperature
 	instance: "SomeInstance",// ie: instance0
 	endpoint: {
-		url: "ws://sofia2.com/sib/api_websocket"//the public sib gateway for WebSockets
+		ws: "ws://sofia2.com/sib/api_websocket"//the public sib gateway for WebSockets
 	},
 	onMessage: function (msg) {
 		console.log(msg);

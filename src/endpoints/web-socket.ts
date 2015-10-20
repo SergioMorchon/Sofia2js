@@ -1,4 +1,8 @@
-class Endpoint {
+/// <reference path="endpoint" />
+
+import Endpoint from "./endpoint";
+
+class WSEndpoint implements Endpoint {
 	
 	socket: WebSocket;
 	
@@ -7,8 +11,7 @@ class Endpoint {
 	
 	private queuedMessages = <any[]>[];
 
-	constructor(options: Endpoint.Options) {
-
+	constructor(options: WSEndpoint.Options) {
 		this.onMessage = options.onMessage;
 		this.onError = options.onError;
 		this.socket = new WebSocket(options.url);
@@ -26,11 +29,14 @@ class Endpoint {
 	}
 	
 	send<Output>(message: Output) {
-		if (this.socket.readyState !== WebSocket.OPEN) {
-			this.queuedMessages.push(message);
-		} else {
-			this.socket.send(JSON.stringify(message));
-		}
+		return new Promise<void>(resolve => {
+			if (this.socket.readyState !== WebSocket.OPEN) {
+				this.queuedMessages.push(message);
+			} else {
+				this.socket.send(JSON.stringify(message));
+			}
+			resolve();
+		});
 	}
 
 	close() {
@@ -38,12 +44,14 @@ class Endpoint {
 	}
 }
 
-module Endpoint {
-	export interface Options {
-		url: string;
-		onMessage: <Input>(message: Input) => void;
-		onError: (evt: Event) => void;
+module WSEndpoint {
+	
+	export const IS_SUPPORTED = typeof WebSocket !== "undefined";
+	
+	export const ENDPOINT_TYPE = "ws";
+	
+	export interface Options extends Endpoint.Options {
 	}
 }
 
-export default Endpoint;
+export default WSEndpoint;
